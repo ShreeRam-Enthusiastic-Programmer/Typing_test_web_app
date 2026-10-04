@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yellow Flash Typing</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        anime: {
+                            bg: 'var(--bg-color)',
+                            card: 'var(--card-bg)',
+                            accent: 'var(--accent-color)',
+                            glow: 'var(--glow-color)',
+                            text: 'var(--text-color)',
+                            subtext: 'var(--subtext-color)',
+                            border: 'var(--border-color)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Orbitron & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome & Lucide Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for WPM graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        /* Theme Variables */
+        :root, body.theme-yellowflash {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --accent-color: #FACC15;
+            --glow-color: rgba(250, 204, 21, 0.4);
+            --text-color: #F3F4F6;
+            --subtext-color: #9CA3AF;
+            --border-color: #1F2937;
+        }
+        body.theme-demonslayer {
+            --bg-color: #0f1410;
+            --card-bg: #18221a;
+            --accent-color: #22c55e;
+            --glow-color: rgba(34, 197, 94, 0.4);
+            --text-color: #ECFDF5;
+            --subtext-color: #94A3B8;
+            --border-color: #233827;
+        }
+        body.theme-dragonball {
+            --bg-color: #1a0f08;
+            --card-bg: #27160d;
+            --accent-color: #f97316;
+            --glow-color: rgba(249, 115, 22, 0.4);
+            --text-color: #FFF7ED;
+            --subtext-color: #A8A29E;
+            --border-color: #3f2212;
+        }
+        body.theme-aot {
+            --bg-color: #151412;
+            --card-bg: #201e1a;
+            --accent-color: #d97706;
+            --glow-color: rgba(217, 119, 6, 0.4);
+            --text-color: #FDE68A;
+            --subtext-color: #A1A1AA;
+            --border-color: #3b352b;
+        }
+        body.theme-jjk {
+            --bg-color: #08080c;
+            --card-bg: #101018;
+            --accent-color: #a855f7;
+            --glow-color: rgba(168, 85, 247, 0.4);
+            --text-color: #F3E8FF;
+            --subtext-color: #A78BFA;
+            --border-color: #201a30;
+        }
+        body.theme-harrypotter {
+            --bg-color: #0c0f17;
+            --card-bg: #141b2d;
+            --accent-color: #3b82f6;
+            --glow-color: rgba(59, 130, 246, 0.4);
+            --text-color: #EFF6FF;
+            --subtext-color: #93C5FD;
+            --border-color: #1e293b;
+        }
+        body.theme-thor {
+            --bg-color: #121019;
+            --card-bg: #1c1827;
+            --accent-color: #ef4444;
+            --glow-color: rgba(239, 68, 68, 0.4);
+            --text-color: #FEF2F2;
+            --subtext-color: #FCA5A5;
+            --border-color: #2d2640;
+        }
+        body.theme-virat {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent-color: #eab308;
+            --glow-color: rgba(234, 179, 8, 0.4);
+            --text-color: #FFFFFF;
+            --subtext-color: #8b949e;
+            --border-color: #30363d;
+        }
+
+        #floating-bg-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-particle {
+            position: absolute;
+            opacity: 0.15;
+            animation: floatParticle 15s linear infinite;
+            user-select: none;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(105vh) rotate(0deg) scale(0.8); }
+            50% { transform: translateY(50vh) rotate(180deg) scale(1.2); }
+            100% { transform: translateY(-10vh) rotate(360deg) scale(0.8); }
+        }
+
+        .anime-glow {
+            box-shadow: 0 0 20px var(--glow-color);
+        }
+        .anime-border {
+            border-color: var(--border-color);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+    </style>
+</head>
+<body class="bg-anime-bg text-anime-text min-h-screen flex flex-col justify-between selection:bg-yellow-400 selection:text-black theme-yellowflash relative overflow-x-hidden">
+
+    <!-- FLOATING BACKGROUND PARTICLES CONTAINER -->
+    <div id="floating-bg-container"></div>
+
+    <!-- HEADER -->
+    <header class="w-full max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between border-b anime-border gap-4 relative z-10">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="location.reload()">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-orbitron font-black text-xl bg-amber-400 text-black anime-glow" id="logo-badge">
+                ⚡
+            </div>
+            <div>
+                <h1 class="font-orbitron font-extrabold text-xl sm:text-2xl tracking-wider text-anime-accent" id="app-title">YELLOW FLASH</h1>
+                <p class="text-xs text-anime-subtext uppercase tracking-widest font-semibold">Speed & Legend Typing Test</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-4 flex-wrap justify-center">
+            <!-- Theme Selector -->
+            <div class="relative">
+                <select id="theme-selector" class="bg-anime-card border anime-border text-xs sm:text-sm font-semibold rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-anime-accent cursor-pointer transition">
+                    <option value="yellowflash">⚡ Minato (Yellow Flash)</option>
+                    <option value="demonslayer">🌊 Tanjiro (Demon Slayer)</option>
+                    <option value="dragonball">🔥 Goku (Dragon Ball Z)</option>
+                    <option value="aot">⚔️ Eren (Attack on Titan)</option>
+                    <option value="jjk">🌀 Gojo (Jujutsu Kaisen)</option>
+                    <option value="harrypotter">⚡ Harry Potter (Wizarding World)</option>
+                    <option value="thor">🔨 Thor (God of Thunder)</option>
+                    <option value="virat">👑 Virat Kohli (GOAT Cricket)</option>
+                </select>
+            </div>
+
+            <!-- Sound Toggle Button -->
+            <button id="sound-toggle-btn" class="p-2.5 rounded-lg bg-anime-card border anime-border hover:bg-opacity-80 transition flex items-center space-x-2 text-xs sm:text-sm font-medium" title="Toggle Mechanical Sound">
+                <i id="sound-icon" class="fas fa-volume-high text-anime-accent"></i>
+                <span id="sound-label" class="hidden sm:inline">Sound: ON</span>
+            </button>
+
+            <!-- TTS (Text to Speech) Toggle Button -->
+            <button id="tts-toggle-btn" class="p-2.5 rounded-lg bg-anime-card border anime-border hover:bg-opacity-80 transition flex items-center space-x-2 text-xs sm:text-sm font-medium" title="Toggle Text-to-Speech Pronunciation">
+                <i id="tts-icon" class="fas fa-comment-dots text-anime-accent"></i>
+                <span id="tts-label" class="hidden sm:inline">Word Voice: OFF</span>
+            </button>
+
+            <!-- History Button -->
+            <button onclick="openHistoryModal()" class="p-2.5 rounded-lg bg-anime-card border anime-border hover:bg-opacity-80 transition flex items-center space-x-2 text-xs sm:text-sm font-medium">
+                <i class="fas fa-history text-anime-accent"></i>
+                <span class="hidden sm:inline">History</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="w-full max-w-5xl mx-auto px-4 py-8 flex-1 flex flex-col justify-center relative z-10">
+        
+        <!-- SETTINGS BAR (Modes & Categories) -->
+        <div id="settings-bar" class="flex flex-col md:flex-row items-center justify-between bg-anime-card p-3 rounded-2xl border anime-border mb-6 gap-4 shadow-lg">
+            <!-- Word Category Selector -->
+            <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                <span class="text-xs font-bold text-anime-subtext uppercase tracking-wider px-2">Lore:</span>
+                <button class="category-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-anime-accent text-black transition" data-category="anime_lore">Anime Lore</button>
+                <button class="category-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-anime-subtext hover:text-anime-text transition" data-category="harry_potter">Wizarding World</button>
+                <button class="category-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-anime-subtext hover:text-anime-text transition" data-category="thor_marvel">Asgardian</button>
+                <button class="category-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-anime-subtext hover:text-anime-text transition" data-category="virat_cricket">Cricket GOAT</button>
+                <button class="category-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-anime-subtext hover:text-anime-text transition" data-category="standard">Standard</button>
+                <button class="category-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-anime-subtext hover:text-anime-text transition" data-category="coding">Jutsu / Code</button>
+            </div>
+
+            <div class="h-6 w-px bg-anime-border hidden md:block"></div>
+
+            <!-- Mode Selector (Time vs Words) -->
+            <div class="flex items-center space-x-3 overflow-x-auto w-full md:w-auto justify-end">
+                <div class="flex bg-anime-bg p-1 rounded-xl border anime-border space-x-1" id="mode-type-selector">
+                    <button class="px-3 py-1 rounded-lg text-xs font-bold transition bg-anime-accent text-black" data-mode="time">Time</button>
+                    <button class="px-3 py-1 rounded-lg text-xs font-bold text-anime-subtext hover:text-anime-text transition" data-mode="words">Words</button>
+                </div>
+
+                <!-- Sub-modes options -->
+                <div class="flex bg-anime-bg p-1 rounded-xl border anime-border space-x-1" id="submode-options">
+                    <!-- populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TYPING ARENA CONTAINER -->
+        <div id="typing-arena" class="relative bg-anime-card rounded-3xl border anime-border p-6 sm:p-10 shadow-2xl transition-all duration-300 cursor-text">
+            
+            <!-- Live HUD (WPM, Accuracy, Timer) -->
+            <div class="flex items-center justify-between mb-8 text-anime-subtext font-orbitron text-sm sm:text-base border-b anime-border pb-4">
+                <div class="flex items-center space-x-6">
+                    <div>WPM: <span id="live-wpm" class="text-anime-accent font-bold text-lg sm:text-xl">0</span></div>
+                    <div>ACC: <span id="live-acc" class="text-anime-accent font-bold text-lg sm:text-xl">100%</span></div>
+                </div>
+                <div>
+                    <span id="timer-label" class="uppercase text-xs tracking-widest">Time Left:</span> 
+                    <span id="live-timer" class="text-anime-accent font-bold text-xl sm:text-2xl">30</span>s
+                </div>
+            </div>
+
+            <!-- Focus warning overlay / Click to focus -->
+            <div id="focus-overlay" class="absolute inset-0 bg-anime-card bg-opacity-95 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center cursor-pointer z-25 transition-opacity opacity-100">
+                <div class="w-16 h-16 rounded-2xl bg-anime-accent text-black flex items-center justify-center text-2xl mb-4 anime-glow animate-bounce">
+                    <i class="fas fa-keyboard"></i>
+                </div>
+                <h3 class="font-orbitron font-bold text-lg sm:text-xl mb-1 text-anime-text">Click here or start typing</h3>
+                <p class="text-xs sm:text-sm text-anime-subtext">Awaken your chakra and begin the speed test</p>
+            </div>
+
+            <!-- Hidden actual input - positioned transparently over display area to capture all mobile & desktop keystrokes -->
+            <input type="text" id="typing-input" class="absolute inset-0 w-full h-full opacity-0 cursor-default z-10" autocomplete="off" autocapitalize="off" spellcheck="false">
+
+            <!-- Words Display Box -->
+            <div id="words-display" class="relative font-mono text-lg sm:text-2xl leading-relaxed tracking-wide flex flex-wrap content-start h-36 sm:h-44 overflow-y-auto select-none z-0">
+                <!-- Words injected via JS -->
+            </div>
+
+            <!-- Restart & Controls Footer -->
+            <div class="mt-8 flex items-center justify-between pt-4 border-t anime-border relative z-20">
+                <div class="text-xs text-anime-subtext flex items-center space-x-2">
+                    <kbd class="px-2 py-1 bg-anime-bg rounded border anime-border font-orbitron">Tab</kbd>
+                    <span>+</span>
+                    <kbd class="px-2 py-1 bg-anime-bg rounded border anime-border font-orbitron">Enter</kbd>
+                    <span>to restart</span>
+                </div>
+                <button onclick="resetTest()" class="px-5 py-2.5 rounded-xl bg-anime-accent text-black font-orbitron font-bold text-xs sm:text-sm hover:opacity-90 transition flex items-center space-x-2 anime-glow">
+                    <i class="fas fa-redo-alt"></i>
+                    <span>Restart Test</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION (Hidden by default) -->
+        <div id="results-section" class="hidden bg-anime-card rounded-3xl border anime-border p-6 sm:p-8 shadow-2xl mt-4">
+            <div class="text-center mb-6">
+                <span class="px-4 py-1.5 rounded-full bg-anime-accent text-black font-orbitron text-xs font-bold uppercase tracking-widest inline-block mb-2 anime-glow">Test Completed</span>
+                <h2 class="font-orbitron font-black text-2xl sm:text-3xl text-anime-text" id="result-rank-title">Rank S: Legendary Shinobi</h2>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                <div class="bg-anime-bg p-4 rounded-2xl border anime-border text-center">
+                    <p class="text-xs text-anime-subtext uppercase font-orbitron mb-1">Net WPM</p>
+                    <p class="text-3xl sm:text-4xl font-orbitron font-black text-anime-accent" id="res-wpm">0</p>
+                </div>
+                <div class="bg-anime-bg p-4 rounded-2xl border anime-border text-center">
+                    <p class="text-xs text-anime-subtext uppercase font-orbitron mb-1">Accuracy</p>
+                    <p class="text-3xl sm:text-4xl font-orbitron font-black text-anime-accent" id="res-acc">0%</p>
+                </div>
+                <div class="bg-anime-bg p-4 rounded-2xl border anime-border text-center">
+                    <p class="text-xs text-anime-subtext uppercase font-orbitron mb-1">Characters</p>
+                    <p class="text-3xl sm:text-4xl font-orbitron font-black text-anime-text" id="res-chars">0/0/0/0</p>
+                    <p class="text-[10px] text-anime-subtext mt-1">correct/err/extra/miss</p>
+                </div>
+                <div class="bg-anime-bg p-4 rounded-2xl border anime-border text-center">
+                    <p class="text-xs text-anime-subtext uppercase font-orbitron mb-1">Time Elapsed</p>
+                    <p class="text-3xl sm:text-4xl font-orbitron font-black text-anime-text" id="res-time">0s</p>
+                </div>
+            </div>
+
+            <!-- WPM Timeline Chart -->
+            <div class="bg-anime-bg p-4 rounded-2xl border anime-border mb-8">
+                <h3 class="font-orbitron font-bold text-sm text-anime-subtext mb-3">WPM Performance Timeline</h3>
+                <div class="h-48 w-full">
+                    <canvas id="wpmChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Results Action Buttons -->
+            <div class="flex items-center justify-center space-x-4">
+                <button onclick="resetTest()" class="px-6 py-3 rounded-xl bg-anime-accent text-black font-orbitron font-bold text-sm hover:opacity-90 transition flex items-center space-x-2 anime-glow">
+                    <i class="fas fa-redo-alt"></i>
+                    <span>Try Again</span>
+                </button>
+                <button onclick="openHistoryModal()" class="px-6 py-3 rounded-xl bg-anime-bg border anime-border font-orbitron font-bold text-sm hover:bg-anime-card transition flex items-center space-x-2">
+                    <i class="fas fa-history text-anime-accent"></i>
+                    <span>View History</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- HISTORY MODAL -->
+    <div id="history-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-anime-card rounded-3xl border anime-border w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-6 border-b anime-border flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-anime-accent text-black flex items-center justify-center font-bold">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-lg text-anime-text">Typing History</h3>
+                        <p class="text-xs text-anime-subtext">Your past shinobi speed records</p>
+                    </div>
+                </div>
+                <button onclick="closeHistoryModal()" class="w-9 h-9 rounded-xl bg-anime-bg border anime-border flex items-center justify-center hover:bg-anime-accent hover:text-black transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 space-y-3" id="history-list-container">
+                <!-- Populated via JS -->
+            </div>
+            <div class="p-4 border-t anime-border flex justify-between items-center bg-anime-bg">
+                <button onclick="clearHistory()" class="px-4 py-2 rounded-xl bg-red-500 bg-opacity-20 text-red-400 border border-red-500 border-opacity-30 text-xs font-semibold hover:bg-opacity-30 transition">
+                    Clear History
+                </button>
+                <button onclick="closeHistoryModal()" class="px-5 py-2 rounded-xl bg-anime-accent text-black font-semibold text-xs">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="w-full max-w-6xl mx-auto px-6 py-4 border-t anime-border flex flex-col sm:flex-row items-center justify-between text-xs text-anime-subtext gap-2">
+        <p>⚡ Yellow Flash Typing — Powered by Anime Chakra & Web Audio API</p>
+        <p class="font-medium text-anime-text">Made by Shreeram</p>
+    </footer>
+
+    <!-- APPLICATION SCRIPT -->
+    <script>
+        // --- WORD POOLS ---
+        const wordPools = {
+            anime_lore: [
+                "minato", "naruto", "rasengan", "hokage", "kakashi", "sharingan", "sasuke", "itachi", "susanoo",
+                "tanjiro", "nezuko", "zenitsu", "inosuke", "giyu", "muzan", "hashira", "breathing", "sun", "water",
+                "goku", "vegeta", "saiyan", "kamehameha", "gohan", "frieza", "beerus", "ultra", "instinct", "kaioken",
+                "eren", "mikasa", "levi", "titan", "scout", "survey", "corps", "paradis", "marley", "rumbling",
+                "gojo", "sukuna", "megumi", "nobara", "domain", "expansion", "infinite", "void", "cursed", "energy"
+            ],
+            harry_potter: [
+                "harry", "potter", "hogwarts", "gryffindor", "slytherin", "hufflepuff", "ravenclaw", "dumbledore",
+                "voldemort", "snape", "hermione", "ron", "wand", "spell", "lumos", "nox", "expecto", "patronum",
+                "quidditch", "snitch", "broom", "deathly", "hallows", "horcrux", "phoenix", "castle", "potion",
+                "herbology", "transfiguration", "animagus", "dementor", "boggart", "expelliarmus", "accio", "avada"
+            ],
+            thor_marvel: [
+                "thor", "odinson", "asgard", "mjollnir", "stormbreaker", "ragnarok", "loki", "odin", "heimdall",
+                "valkyrie", "avengers", "thunder", "lightning", "bifrost", "jotunheim", "sakaar", "surtr",
+                "hela", "gorr", "gorrofgods", "mjolnir", "infinity", "stones", "hammer", "god", "pantheon", "realm"
+            ],
+            virat_cricket: [
+                "virat", "kohli", "chiru", "runmachine", "kingkohli", "roaring", "century", "chase", "masterclass",
+                "coverdrive", "aggressive", "captain", "rcb", "indian", "cricket", "stadium", "sixer", "boundary",
+                "wicket", "helmet", "celebration", "goat", "record", "persistence", "fitness", "passion", "dedication"
+            ],
+            standard: [
+                "the", "be", "to", "of", "and", "a", "in", "that", "have", "i", "it", "for", "not", "on", "with",
+                "he", "as", "you", "do", "at", "this", "but", "his", "by", "from", "they", "we", "say", "her", "she",
+                "or", "an", "will", "my", "one", "all", "would", "there", "their", "what", "so", "up", "out", "if",
+                "about", "who", "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just",
+                "him", "know", "take", "people", "into", "year", "your", "good", "some", "could", "them", "see",
+                "other", "than", "then", "now", "look", "only", "come", "its", "over", "think", "also", "back",
+                "after", "use", "two", "how", "our", "work", "first", "well", "way", "even", "new", "want", "because"
+            ],
+            coding: [
+                "function", "const", "let", "var", "return", "async", "await", "import", "export", "default",
+                "class", "extends", "constructor", "this", "super", "try", "catch", "finally", "throw", "new",
+                "if", "else", "switch", "case", "break", "for", "while", "do", "in", "of", "null", "undefined",
+                "true", "false", "boolean", "string", "number", "object", "array", "promise", "json", "fetch",
+                "document", "window", "console", "log", "error", "warn", "addEventListener", "querySelector", "createElement"
+            ]
+        };
+
+        // --- STATE VARIABLES ---
+        let currentTheme = localStorage.getItem('yft_theme') || 'yellowflash';
+        let soundEnabled = localStorage.getItem('yft_sound') !== 'false';
+        let ttsEnabled = localStorage.getItem('yft_tts') === 'true';
+        let selectedCategory = 'anime_lore';
+        let modeType = 'time';
+        let subModeValue = 30;
+
+        let wordsList = [];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let testStarted = false;
+        let testCompleted = false;
+        let timerInterval = null;
+        let timeLeft = 30;
+        let timeElapsed = 0;
+
+        let correctChars = 0;
+        let incorrectChars = 0;
+        let extraChars = 0;
+        let missedChars = 0;
+        let totalTyped = 0;
+
+        let wpmHistoryData = [];
+        let chartInstance = null;
+        let audioCtx = null;
+
+        // --- THEME DEFINITIONS ---
+        const themes = {
+            yellowflash: { name: "Yellow Flash", badge: "⚡", title: "YELLOW FLASH", particles: ["⚡", "✨", "🌀", "🗡️", "💫"] },
+            demonslayer: { name: "Demon Slayer", badge: "🌊", title: "WATER BREATHING", particles: ["🌊", "🍃", "🔥", "⚡", "🦋"] },
+            dragonball: { name: "Dragon Ball", badge: "🔥", title: "SUPER SAIYAN", particles: ["🔥", "⭐", "🐉", "💫", "💥"] },
+            aot: { name: "Attack on Titan", badge: "⚔", title: "SCOUTING LEGION", particles: ["⚔️", "🛡️️", "🦅", "🗝️", "🌲"] },
+            jjk: { name: "Jujutsu Kaisen", badge: "🌀", title: "INFINITE VOID", particles: ["🌀", "👁️️", "💀", "🔮", "⚡"] },
+            harrypotter: { name: "Harry Potter", badge: "🧙‍♂️", title: "WIZARDING WORLD", particles: ["⚡", "🪄", "🦉", "🧪", "📜"] },
+            thor: { name: "Thor", badge: "🔨", title: "GOD OF THUNDER", particles: ["🔨", "⚡", "🌩️", "🛡️", "👑"] },
+            virat: { name: "Virat Kohli", badge: "👑", title: "CRICKET GOAT", particles: ["🏏", "👑", "🔥", "💯", "🏆"] }
+        };
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            setTheme(currentTheme);
+            initSoundToggleUI();
+            initTtsToggleUI();
+            setupModeButtons();
+            setupCategoryButtons();
+            initTest();
+
+            const themeSelector = document.getElementById('theme-selector');
+            if (themeSelector) {
+                themeSelector.value = currentTheme;
+                themeSelector.addEventListener('change', (e) => {
+                    setTheme(e.target.value);
+                });
+            }
+
+            document.getElementById('sound-toggle-btn').addEventListener('click', toggleSound);
+            document.getElementById('tts-toggle-btn').addEventListener('click', toggleTts);
+
+            const typingInput = document.getElementById('typing-input');
+            const focusOverlay = document.getElementById('focus-overlay');
+            const arena = document.getElementById('typing-arena');
+
+            typingInput.addEventListener('input', handleTypingInput);
+            typingInput.addEventListener('keydown', handleKeyDown);
+
+            // Clicking anywhere on the arena focuses the hidden input and hides the overlay
+            arena.addEventListener('click', () => {
+                typingInput.focus();
+                focusOverlay.classList.add('opacity-0', 'pointer-events-none');
+            });
+
+            focusOverlay.addEventListener('click', (e) => {
+                e.stopPropagation();
+                typingInput.focus();
+                focusOverlay.classList.add('opacity-0', 'pointer-events-none');
+            });
+
+            typingInput.addEventListener('blur', () => {
+                if (!testCompleted) {
+                    focusOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                }
+            });
+
+            // Auto focus on load
+            setTimeout(() => {
+                typingInput.focus();
+                focusOverlay.classList.add('opacity-0', 'pointer-events-none');
+            }, 150);
+        });
+
+        // --- AUDIO ENGINE ---
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playKeyClickSound(isError = false) {
+            if (!soundEnabled) return;
+            try {
+                initAudioContext();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = isError ? 'sawtooth' : 'sine';
+                osc.frequency.setValueAtTime(isError ? 120 : 600 + Math.random() * 200, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(isError ? 60 : 200, audioCtx.currentTime + 0.05);
+
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch (e) {
+                console.error("Audio error:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem('yft_sound', soundEnabled);
+            initSoundToggleUI();
+            if (soundEnabled) {
+                playKeyClickSound(false);
+            }
+        }
+
+        function initSoundToggleUI() {
+            const icon = document.getElementById('sound-icon');
+            const label = document.getElementById('sound-label');
+
+            if (soundEnabled) {
+                icon.className = "fas fa-volume-high text-anime-accent";
+                label.textContent = "Sound: ON";
+            } else {
+                icon.className = "fas fa-volume-xmark text-anime-subtext";
+                label.textContent = "Sound: OFF";
+            }
+        }
+
+        // --- TTS ENGINE ---
+        function toggleTts() {
+            ttsEnabled = !ttsEnabled;
+            localStorage.setItem('yft_tts', ttsEnabled);
+            initTtsToggleUI();
+            if (ttsEnabled && 'speechSynthesis' in window) {
+                speakWord("Voice activated");
+            }
+        }
+
+        function initTtsToggleUI() {
+            const icon = document.getElementById('tts-icon');
+            const label = document.getElementById('tts-label');
+
+            if (ttsEnabled) {
+                icon.className = "fas fa-comment-dots text-anime-accent";
+                label.textContent = "Word Voice: ON";
+            } else {
+                icon.className = "fas fa-comment-slash text-anime-subtext";
+                label.textContent = "Word Voice: OFF";
+            }
+        }
+
+        function speakWord(text) {
+            if (!ttsEnabled || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.1;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } catch (e) {
+                console.error("TTS error:", e);
+            }
+        }
+
+        // --- THEME MANAGEMENT ---
+        function setTheme(themeName) {
+            currentTheme = themeName;
+            localStorage.setItem('yft_theme', themeName);
+
+            document.body.className = document.body.className.replace(/theme-\w+/g, '');
+            document.body.classList.add(`theme-${themeName}`, 'bg-anime-bg', 'text-anime-text', 'min-h-screen', 'flex', 'flex-col', 'justify-between', 'relative', 'overflow-x-hidden');
+
+            const themeMeta = themes[themeName];
+            if (themeMeta) {
+                document.getElementById('logo-badge').textContent = themeMeta.badge;
+                document.getElementById('app-title').textContent = themeMeta.title;
+                generateFloatingParticles(themeMeta.particles);
+            }
+        }
+
+        function generateFloatingParticles(symbols) {
+            const container = document.getElementById('floating-bg-container');
+            container.innerHTML = '';
+
+            const count = 18;
+            for (let i = 0; i < count; i++) {
+                const span = document.createElement('span');
+                span.className = 'floating-particle font-orbitron';
+                span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                
+                const randomLeft = Math.random() * 100;
+                const randomSize = 1.2 + Math.random() * 2.2;
+                const randomDuration = 10 + Math.random() * 15;
+                const randomDelay = Math.random() * 10;
+
+                span.style.left = `${randomLeft}vw`;
+                span.style.fontSize = `${randomSize}rem`;
+                span.style.animationDuration = `${randomDuration}s`;
+                span.style.animationDelay = `-${randomDelay}s`;
+
+                container.appendChild(span);
+            }
+        }
+
+        // --- MODES & CATEGORIES ---
+        function setupModeButtons() {
+            const modeTypeSelector = document.getElementById('mode-type-selector');
+            renderSubmodes();
+
+            modeTypeSelector.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    modeTypeSelector.querySelectorAll('button').forEach(b => {
+                        b.className = "px-3 py-1 rounded-lg text-xs font-bold text-anime-subtext hover:text-anime-text transition";
+                    });
+                    btn.className = "px-3 py-1 rounded-lg text-xs font-bold transition bg-anime-accent text-black";
+                    modeType = btn.dataset.mode;
+                    subModeValue = modeType === 'time' ? 30 : 25;
+                    renderSubmodes();
+                    resetTest();
+                });
+            });
+        }
+
+        function renderSubmodes() {
+            const container = document.getElementById('submode-options');
+            container.innerHTML = '';
+
+            const values = modeType === 'time' ? [15, 30, 60] : [25, 50, 100];
+            values.forEach(val => {
+                const b = document.createElement('button');
+                b.className = `px-3 py-1 rounded-lg text-xs font-bold transition ${val === subModeValue ? 'bg-anime-accent text-black' : 'text-anime-subtext hover:text-anime-text'}`;
+                b.textContent = val + (modeType === 'time' ? 's' : 'w');
+                b.addEventListener('click', () => {
+                    subModeValue = val;
+                    renderSubmodes();
+                    resetTest();
+                });
+                container.appendChild(b);
+            });
+        }
+
+        function setupCategoryButtons() {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => {
+                        b.className = "category-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-anime-subtext hover:text-anime-text transition";
+                    });
+                    btn.className = "category-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-anime-accent text-black transition";
+                    selectedCategory = btn.dataset.category;
+                    resetTest();
+                });
+            });
+        }
+
+        // --- TEST INITIALIZATION ---
+        function initTest() {
+            testStarted = false;
+            testCompleted = false;
+            wordIndex = 0;
+            charIndex = 0;
+            correctChars = 0;
+            incorrectChars = 0;
+            extraChars = 0;
+            missedChars = 0;
+            totalTyped = 0;
+            timeElapsed = 0;
+            wpmHistoryData = [];
+
+            if (timerInterval) clearInterval(timerInterval);
+
+            timeLeft = modeType === 'time' ? subModeValue : 0;
+            document.getElementById('live-timer').textContent = modeType === 'time' ? timeLeft : '0';
+            document.getElementById('timer-label').textContent = modeType === 'time' ? 'Time Left:' : 'Time Elapsed:';
+
+            document.getElementById('live-wpm').textContent = '0';
+            document.getElementById('live-acc').textContent = '100%';
+
+            document.getElementById('typing-arena').classList.remove('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('focus-overlay').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('typing-input').value = '';
+
+            generateWords();
+            renderWords();
+        }
+
+        function generateWords() {
+            const pool = wordPools[selectedCategory] || wordPools.anime_lore;
+            const targetCount = modeType === 'words' ? subModeValue : 80;
+            wordsList = [];
+            for (let i = 0; i < targetCount; i++) {
+                const randWord = pool[Math.floor(Math.random() * pool.length)];
+                wordsList.push(randWord);
+            }
+        }
+
+        function renderWords() {
+            const container = document.getElementById('words-display');
+            container.innerHTML = '';
+
+            wordsList.forEach((word) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = "word relative inline-block mr-2.5 mb-2";
+                
+                for (let cIdx = 0; cIdx < word.length; cIdx++) {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = "char text-anime-subtext transition-colors duration-100";
+                    charSpan.textContent = word[cIdx];
+                    wordSpan.appendChild(charSpan);
+                }
+
+                const spaceSpan = document.createElement('span');
+                spaceSpan.className = "char text-anime-subtext";
+                spaceSpan.textContent = " ";
+                wordSpan.appendChild(spaceSpan);
+
+                container.appendChild(wordSpan);
+            });
+
+            highlightCurrentPosition();
+        }
+
+        // --- TYPING HANDLERS ---
+        function handleKeyDown(e) {
+            if (testCompleted) return;
+
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                resetTest();
+                return;
+            }
+
+            if (!testStarted && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                startTest();
+            }
+        }
+
+        function startTest() {
+            if (testStarted) return;
+            testStarted = true;
+            const overlay = document.getElementById('focus-overlay');
+            if (overlay) {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+
+            if (modeType === 'time') {
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timeElapsed++;
+                    document.getElementById('live-timer').textContent = timeLeft;
+                    updateLiveStats();
+
+                    if (timeElapsed % 2 === 0) {
+                        recordWpmSnapshot();
+                    }
+
+                    if (timeLeft <= 0) {
+                        finishTest();
+                    }
+                }, 1000);
+            } else {
+                timerInterval = setInterval(() => {
+                    timeElapsed++;
+                    document.getElementById('live-timer').textContent = timeElapsed;
+                    updateLiveStats();
+
+                    if (timeElapsed % 2 === 0) {
+                        recordWpmSnapshot();
+                    }
+                }, 1000);
+            }
+        }
+
+        function handleTypingInput(e) {
+            if (testCompleted) return;
+            if (!testStarted) {
+                startTest();
+            }
+
+            const inputVal = e.target.value;
+            const currentWord = wordsList[wordIndex];
+
+            // Spacebar / Word completed
+            if (inputVal.endsWith(' ')) {
+                e.target.value = '';
+                if (charIndex > 0 || wordIndex < wordsList.length - 1) {
+                    const wordElement = document.getElementById('words-display').children[wordIndex];
+                    if (wordElement) {
+                        const charElements = wordElement.querySelectorAll('.char');
+                        for (let i = charIndex; i < currentWord.length; i++) {
+                            if (charElements[i]) {
+                                charElements[i].classList.add('text-red-500', 'opacity-50');
+                            }
+                            missedChars++;
+                        }
+                    }
+
+                    speakWord(currentWord);
+
+                    wordIndex++;
+                    charIndex = 0;
+
+                    if (modeType === 'words' && wordIndex >= subModeValue) {
+                        finishTest();
+                        return;
+                    }
+
+                    if (wordIndex >= wordsList.length - 5) {
+                        generateMoreWords();
+                    }
+
+                    highlightCurrentPosition();
+                }
+                return;
+            }
+
+            // Backspace / Deletion handling
+            if (inputVal.length < charIndex) {
+                playKeyClickSound(false);
+                charIndex = inputVal.length;
+                const wordElement = document.getElementById('words-display').children[wordIndex];
+                if (wordElement) {
+                    const charElements = wordElement.querySelectorAll('.char');
+                    charElements.forEach((el, idx) => {
+                        if (idx >= charIndex && idx < currentWord.length) {
+                            el.className = "char text-anime-subtext";
+                        }
+                    });
+                    const extras = wordElement.querySelectorAll('.extra-char');
+                    extras.forEach(ex => ex.remove());
+                }
+
+                highlightCurrentPosition();
+                return;
+            }
+
+            // Character typed
+            const typedChar = inputVal[inputVal.length - 1];
+            totalTyped++;
+
+            const wordElement = document.getElementById('words-display').children[wordIndex];
+            if (!wordElement) return;
+            const charElements = wordElement.querySelectorAll('.char');
+
+            if (charIndex < currentWord.length) {
+                if (typedChar === currentWord[charIndex]) {
+                    charElements[charIndex].className = "char text-anime-accent font-bold drop-shadow-[0_0_8px_var(--glow-color)]";
+                    correctChars++;
+                    playKeyClickSound(false);
+                } else {
+                    charElements[charIndex].className = "char text-red-500 font-bold bg-red-500 bg-opacity-20 rounded";
+                    incorrectChars++;
+                    playKeyClickSound(true);
+                }
+                charIndex++;
+            } else {
+                const extraSpan = document.createElement('span');
+                extraSpan.className = "extra-char text-red-400 font-bold bg-red-500 bg-opacity-30 rounded text-base sm:text-xl";
+                extraSpan.textContent = typedChar;
+                wordElement.appendChild(extraSpan);
+                extraChars++;
+                playKeyClickSound(true);
+                charIndex++;
+            }
+
+            highlightCurrentPosition();
+            updateLiveStats();
+        }
+
+        function highlightCurrentPosition() {
+            const wordElements = document.getElementById('words-display').children;
+            
+            for (let w = 0; w < wordElements.length; w++) {
+                wordElements[w].classList.remove('border-b-2', 'border-anime-accent');
+                const chars = wordElements[w].querySelectorAll('.char');
+                chars.forEach(c => c.classList.remove('border-l-2', 'border-anime-accent', 'animate-pulse'));
+            }
+
+            if (wordIndex < wordElements.length) {
+                const currentWordEl = wordElements[wordIndex];
+                currentWordEl.classList.add('border-b-2', 'border-anime-accent');
+                const chars = currentWordEl.querySelectorAll('.char');
+                if (charIndex < chars.length) {
+                    chars[charIndex].classList.add('border-l-2', 'border-anime-accent', 'animate-pulse');
+                }
+            }
+        }
+
+        function generateMoreWords() {
+            const pool = wordPools[selectedCategory] || wordPools.anime_lore;
+            for (let i = 0; i < 30; i++) {
+                wordsList.push(pool[Math.floor(Math.random() * pool.length)]);
+            }
+            const container = document.getElementById('words-display');
+            const startIndex = wordsList.length - 30;
+            for (let i = startIndex; i < wordsList.length; i++) {
+                const word = wordsList[i];
+                const wordSpan = document.createElement('span');
+                wordSpan.className = "word relative inline-block mr-2.5 mb-2";
+                for (let cIdx = 0; cIdx < word.length; cIdx++) {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = "char text-anime-subtext transition-colors duration-100";
+                    charSpan.textContent = word[cIdx];
+                    wordSpan.appendChild(charSpan);
+                }
+                const spaceSpan = document.createElement('span');
+                spaceSpan.className = "char text-anime-subtext";
+                spaceSpan.textContent = " ";
+                wordSpan.appendChild(spaceSpan);
+                container.appendChild(wordSpan);
+            }
+        }
+
+        function updateLiveStats() {
+            const timeInMin = Math.max(timeElapsed, 1) / 60;
+            const wordsTypedNum = (correctChars / 5);
+            const wpm = Math.round(wordsTypedNum / timeInMin);
+            const totalAttempted = correctChars + incorrectChars;
+            const acc = totalAttempted > 0 ? Math.round((correctChars / totalAttempted) * 100) : 100;
+
+            document.getElementById('live-wpm').textContent = isNaN(wpm) ? 0 : wpm;
+            document.getElementById('live-acc').textContent = acc + '%';
+        }
+
+        function recordWpmSnapshot() {
+            const timeInMin = timeElapsed / 60;
+            const wpm = Math.round((correctChars / 5) / timeInMin);
+            wpmHistoryData.push({ time: timeElapsed, wpm: isNaN(wpm) ? 0 : wpm });
+        }
+
+        // --- FINISH TEST ---
+        function finishTest() {
+            if (testCompleted) return;
+            testCompleted = true;
+            clearInterval(timerInterval);
+
+            document.getElementById('typing-arena').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+
+            const timeInMin = Math.max(timeElapsed, 1) / 60;
+            const netWpm = Math.max(0, Math.round((correctChars / 5) / timeInMin));
+            const totalAttempted = correctChars + incorrectChars;
+            const accuracy = totalAttempted > 0 ? Math.round((correctChars / totalAttempted) * 100) : 100;
+
+            document.getElementById('res-wpm').textContent = netWpm;
+            document.getElementById('res-acc').textContent = accuracy + '%';
+            document.getElementById('res-chars').textContent = `${correctChars}/${incorrectChars}/${extraChars}/${missedChars}`;
+            document.getElementById('res-time').textContent = timeElapsed + 's';
+
+            let rankTitle = "Rank D: Academy Student";
+            if (netWpm >= 100) rankTitle = "Rank S+: Hokage / Hashira Supreme ⚡";
+            else if (netWpm >= 80) rankTitle = "Rank S: Legendary Shinobi 🌀";
+            else if (netWpm >= 60) rankTitle = "Rank A: Elite Jonin 🔥";
+            else if (netWpm >= 40) rankTitle = "Rank B: Chūnin Warrior ⚔️";
+            else if (netWpm >= 20) rankTitle = "Rank C: Genin Fighter 🌊";
+
+            document.getElementById('result-rank-title').textContent = rankTitle;
+
+            saveResultRecord({
+                date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                theme: currentTheme,
+                category: selectedCategory,
+                mode: `${modeType} (${subModeValue})`,
+                wpm: netWpm,
+                accuracy: accuracy,
+                time: timeElapsed
+            });
+
+            renderWpmChart();
+        }
+
+        function resetTest() {
+            if (timerInterval) clearInterval(timerInterval);
+            initTest();
+        }
+
+        // --- CHART & HISTORY ---
+        function renderWpmChart() {
+            const ctx = document.getElementById('wpmChart').getContext('2d');
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const labels = wpmHistoryData.map(d => `${d.time}s`);
+            const dataVals = wpmHistoryData.map(d => d.wpm);
+
+            if (labels.length === 0) {
+                labels.push('0s');
+                dataVals.push(0);
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Net WPM',
+                        data: dataVals,
+                        borderColor: getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#FACC15',
+                        backgroundColor: getComputedStyle(document.body).getPropertyValue('--glow-color').trim() || 'rgba(250, 204, 21, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#9CA3AF', font: { family: 'Orbitron', size: 10 } }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#9CA3AF', font: { family: 'Orbitron', size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function saveResultRecord(record) {
+            let history = JSON.parse(localStorage.getItem('yft_history') || '[]');
+            history.unshift(record);
+            if (history.length > 20) history = history.slice(0, 20);
+            localStorage.setItem('yft_history', JSON.stringify(history));
+        }
+
+        function openHistoryModal() {
+            const container = document.getElementById('history-list-container');
+            container.innerHTML = '';
+
+            let history = JSON.parse(localStorage.getItem('yft_history') || '[]');
+
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-anime-subtext">
+                        <i class="fas fa-scroll text-4xl mb-3 text-anime-accent opacity-50"></i>
+                        <p class="font-orbitron text-sm">No speed records found yet.</p>
+                        <p class="text-xs mt-1">Complete a typing test to log your shinobi rank!</p>
+                    </div>
+                `;
+            } else {
+                history.forEach((rec, idx) => {
+                    const item = document.createElement('div');
+                    item.className = "bg-anime-bg p-4 rounded-2xl border anime-border flex items-center justify-between";
+                    item.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-anime-card border anime-border flex items-center justify-center font-orbitron font-bold text-anime-accent">
+                                #${idx + 1}
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-orbitron font-bold text-anime-text text-sm">${rec.wpm} WPM</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-full bg-anime-accent bg-opacity-25 text-anime-accent font-semibold">${rec.accuracy}% acc</span>
+                                </div>
+                                <p class="text-[11px] text-anime-subtext mt-0.5">Mode: ${rec.mode} | Lore: ${rec.category} | Theme: ${rec.theme}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[11px] text-anime-subtext">${rec.date}</span>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            document.getElementById('history-modal').classList.remove('hidden');
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('history-modal').classList.add('hidden');
+        }
+
+        function clearHistory() {
+            localStorage.removeItem('yft_history');
+            openHistoryModal();
+        }
+    </script>
+</body>
+</html>
